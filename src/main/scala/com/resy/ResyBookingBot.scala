@@ -15,10 +15,19 @@ object ResyBookingBot extends Logging {
   def main(args: Array[String]): Unit = {
     logger.info("Starting Resy Booking Bot")
 
+    val apiKey = sys.env("RESY_API_KEY")
+    val authToken = sys.env("RESY_AUTH_TOKEN")
+
+    logger.info(s"API Key starts with: ${apiKey.take(5)}")
+    logger.info(s"Auth Token starts with: ${authToken.take(5)}")
+
+    val resyKeys = ResyKeys(apiKey, authToken) // Assuming ResyKeys takes two parameters: apiKey and authToken
+    // val resyKeys   = resyConfig.at("resyKeys").loadOrThrow[ResyKeys]
+
     val resyConfig = ConfigSource.resources("resyConfig.conf")
-    val resyKeys   = resyConfig.at("resyKeys").loadOrThrow[ResyKeys]
     val resDetails = resyConfig.at("resDetails").loadOrThrow[ReservationDetails]
     val snipeTime  = resyConfig.at("snipeTime").loadOrThrow[SnipeTime]
+
 
     val resyApi             = new ResyApi(resyKeys)
     val resyClient          = new ResyClient(resyApi)
